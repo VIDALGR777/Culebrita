@@ -1,0 +1,14 @@
+{
+  "name": "culebra",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Culebra: el clásico Snake como app de Android",
+  "dependencies": {
+    "@capacitor/android": "^8.6.2",
+    "@capacitor/core": "^8.6.2"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.6.2",
+    "sharp": "^0.34.0"
+  }
+}

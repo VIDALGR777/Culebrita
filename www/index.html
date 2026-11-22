@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Culebra, el clásico Snake en tu navegador</title>
+  <meta name="description" content="Culebra es el clásico juego de la serpiente (Snake): come flores, crece y no te muerdas la cola. Se juega con teclado o con la pantalla táctil.">
+  <meta name="theme-color" content="#130f40">
+  <meta name="color-scheme" content="dark">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Culebra, el clásico Snake en tu navegador">
+  <meta property="og:description" content="Come flores, crece y no te muerdas la cola.">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23130f40'/%3E%3Ccircle cx='15' cy='46' r='8' fill='%231fe0c8'/%3E%3Ccircle cx='30' cy='37' r='9' fill='%239b7bff'/%3E%3Crect x='34' y='12' width='22' height='22' rx='9' fill='%23ff2e93'/%3E%3C/svg%3E">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Culebra">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="game">
+    <h1 class="sr-only">Culebra</h1>
+    <noscript><p class="noscript">Culebra necesita JavaScript para funcionar. Actívalo en tu navegador y vuelve a cargar la página.</p></noscript>
+
+    <header class="hud">
+      <div class="stat">
+        <span class="stat-label">Puntos</span>
+        <span class="stat-value" id="score">0</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Récord</span>
+        <span class="stat-value" id="best">0</span>
+      </div>
+      <div class="tools">
+        <button class="icon-btn" id="btn-sound" type="button" aria-label="Sonido y vibración" aria-pressed="true">
+          <svg class="i-on" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5v5h3.5L12 18V6L7.5 9.5H4z" fill="currentColor"/><path d="M15.5 9a4 4 0 0 1 0 6"/><path d="M18 6.5a8 8 0 0 1 0 11"/></svg>
+          <svg class="i-off" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5v5h3.5L12 18V6L7.5 9.5H4z" fill="currentColor"/><path d="M16 9.5l5 5M21 9.5l-5 5"/></svg>
+        </button>
+        <button class="icon-btn" id="btn-pause" type="button" aria-label="Pausar" disabled>
+          <svg class="i-pause" viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1.2"/><rect x="14" y="5" width="4" height="14" rx="1.2"/></svg>
+          <svg class="i-play" viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="stage" id="stage">
+      <div class="board" id="board">
+        <canvas id="canvas" role="img" aria-label="Tablero de juego"></canvas>
+
+        <div class="overlay" id="overlay" role="dialog" aria-labelledby="ov-title" aria-describedby="ov-text">
+          <h2 class="ov-title" id="ov-title">Culebra</h2>
+          <p class="ov-text" id="ov-text">Come flores, crece y no te muerdas la cola.</p>
+          <label class="switch">
+            <input type="checkbox" id="opt-wrap">
+            <span>Atravesar paredes</span>
+          </label>
+          <button class="primary" id="ov-btn" type="button">Jugar</button>
+          <p class="ov-hint">
+            <span class="hint-key">Muévete con las flechas o WASD. Espacio pausa el juego.</span>
+            <span class="hint-touch">Desliza el dedo por el tablero o usa los botones.</span>
+          </p>
+        </div>
+      </div>
+
+      <div class="dpad" role="group" aria-label="Controles de dirección">
+        <button type="button" class="up" data-dir="up" aria-label="Arriba"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button>
+        <button type="button" class="left" data-dir="left" aria-label="Izquierda"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button>
+        <button type="button" class="right" data-dir="right" aria-label="Derecha"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button>
+        <button type="button" class="down" data-dir="down" aria-label="Abajo"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button>
+      </div>
+    </div>
+  </main>
+
+  <script src="game.js"></script>
+  <script>
+    // Modo sin conexión: solo cuando la página se abre desde internet (no desde un archivo local).
+    if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('sw.js').catch(function () { /* sin modo sin conexión */ });
+      });
+    }
+  </script>
+</body>
+</html>
